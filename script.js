@@ -1,0 +1,61 @@
+function generatePrompt(outputId) {
+    const product = document.getElementById('product').value;
+    const background = document.getElementById('background').value;
+    const theme = document.getElementById('theme').value;
+    const hand = document.getElementById('hand').value;
+    const resolution = document.getElementById('resolution').value;
+
+    let prompt = `Analyze this image, Create image A high-quality photograph of a hand holding the product "${product}" in an outdoor setting. The hand is ${hand}. The background shows ${background} with ${theme}. The image is composed in ${resolution} aspect ratio. Make the setting aesthetically pleasing and unique, yet relevant to the product.`;
+
+    document.getElementById(outputId).textContent = prompt;
+}
+
+function copyPrompt(outputId) {
+    const outputElement = document.getElementById(outputId);
+    const textToCopy = outputElement.textContent;
+    const errorMessageElement = document.getElementById('errorMessage');
+    errorMessageElement.textContent = '';
+
+    if (!textToCopy.trim()) {
+        errorMessageElement.textContent = 'Tidak ada prompt untuk disalin. Harap hasilkan prompt terlebih dahulu.';
+        return;
+    }
+
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = textToCopy;
+    tempTextArea.style.position = 'fixed';
+    tempTextArea.style.top = '0';
+    tempTextArea.style.left = '0';
+    tempTextArea.style.width = '1px';
+    tempTextArea.style.height = '1px';
+    tempTextArea.style.padding = '0';
+    tempTextArea.style.border = 'none';
+    tempTextArea.style.outline = 'none';
+    tempTextArea.style.boxShadow = 'none';
+    tempTextArea.style.background = 'transparent';
+    document.body.appendChild(tempTextArea);
+
+    tempTextArea.select();
+    tempTextArea.setSelectionRange(0, 99999);
+
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showToast();
+        } else {
+            errorMessageElement.textContent = 'Gagal menyalin prompt. Coba salin manual.';
+        }
+    } catch (err) {
+        errorMessageElement.textContent = `Gagal menyalin prompt. Error: ${err.message}`;
+    } finally {
+        document.body.removeChild(tempTextArea);
+    }
+}
+
+function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
+}
